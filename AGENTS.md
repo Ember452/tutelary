@@ -150,14 +150,18 @@ design, scope, and priorities are not constrained by this section.
    after the module they exercise. Unit tests use the core fakes — no
    network, no real LLM, no Docker (docker-marked integration tests are a
    separate lane).
-8. **Comments carry "why".** Write comments only for constraints, tradeoffs,
-   and pitfalls the code cannot show. No narration, no history/issue
-   references, no commented-out code.
+8. **Code carries comments; comments carry "why".** Every public API gets a
+   docstring (what it does, its contract, side effects); inline comments
+   explain constraints, tradeoffs, and pitfalls the code cannot show. No
+   narration, no history/issue references, no commented-out code.
 9. **Readable units.** Prefer functions a reader can hold in their head.
    Split when a second reason to change appears — never by line count.
-10. **Language.** Code, identifiers, comments, and commit messages are
-    English. The design docs in `docs/` are currently Chinese — when
-    updating them, match each file's existing language.
+10. **Language.** Code, identifiers, and commit messages are English; code
+    comments (including docstrings) are written in Chinese, kept
+    standardized: complete sentences, consistent punctuation, technical
+    terms may stay in English where that is clearer. The design docs in
+    `docs/` are currently Chinese — when updating them, match each file's
+    existing language.
 
 ## 5. Definition of Done (per coding task)
 

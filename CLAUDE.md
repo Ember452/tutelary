@@ -12,6 +12,9 @@ Quick reminders (full details in AGENTS.md):
   and let the user decide.
 - Contracts in `docs/03` / `docs/04` are working drafts until first release
   (M5): code decides, docs follow — update them in the same task.
+- Code comments are written in **Chinese**, standardized and why-first:
+  docstrings on public APIs; inline comments only for constraints,
+  tradeoffs, and pitfalls (AGENTS.md §4.8/§4.10).
 - If an architecture test, contract suite, or `only-*` example blocks you,
   stop and surface it. Never disable the judges.
 - Quality constraints bound how code is written, never what gets built.
