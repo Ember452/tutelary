@@ -14,7 +14,7 @@
 
 - 预算声明、压缩、卸载、token 内省（"这次运行 token 花在哪了"）；
 - `examples/only-context.py`；
-- **验收**：only-context 用 fake LLM 跑通；隔离安装测试绿；压缩策略在真实对话日志上完成调参（自用验证，不发布）。
+- **验收**：only-context 用 fake LLM 跑通；隔离安装测试绿；压缩策略在真实对话日志上完成调参（自用验证，不发布），质量以固定评测集的硬指标判定（见 [09](09-development-plan.md) M1）。
 
 ### M2 · 组件三连（memory / sandbox / policy）
 

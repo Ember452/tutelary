@@ -22,7 +22,7 @@ core+门禁      context+自用    memory/policy/sandbox   engine+伞包+双裁�
 ### M0 · 内核与门禁（1–2 周）
 
 - **使命**：把规则变成代码——core 四要素 + fakes + 架构门禁先于一切组件存在。
-- **顺序**：types → events/Bus → lifecycle/effect 栈 → assembler → fakes → 架构测试 6 条 → 契约插件骨架。理由：词先于法，法先于假实现——fakes 反过来检验 lifecycle 是否好用。
+- **顺序**：types → events/Bus → ports → lifecycle/effect 栈 → assembler → fakes → 架构测试 6 条 → 契约插件骨架。理由：词先于法，法先于假实现——fakes 反过来检验 lifecycle 是否好用。
 - **第 0 天 spike（发布形态验证）**：① uv workspace 可编辑安装后 `import tutelary.*` 正常；② 从构建好的 wheel 在全新 venv 单装 tutelary-core 后 import 正常。这是 PEP 420 命名空间的两个已知风险点（editable、单装），各验证一次；失败则降级为 langchain 式独立顶层包名（`tutelary_core` 等），只动 08 的命名规则，不动组件划分。
 - **明确不做**：任何组件、engine、发布流水线（只搭 test.yml 骨架）；不公开发布。
 - **验收**（07 M0 清单 + 一条自证）：core 零依赖证明绿；fail-fast 四种错误各有单测；装配中途失败回滚有单测；**用 fakes 拼一个"hello 装配"示例跑通**——内核自己的 only-\*。
@@ -33,15 +33,19 @@ core+门禁      context+自用    memory/policy/sandbox   engine+伞包+双裁�
 - **使命**：context 做到真实可用——第一个被真实负载消费的组件，也是内核假设的第一次检验。
 - **顺序**：预算模型 → **一个**压缩策略 → 卸载 → token 内省 → only-context → context 契约检查项。
 - **关键纪律**：压缩策略必须压在**真实对话日志**上调参（自己的工作流即可，无需公开；对想象负载调参是本项目认定的最大学习陷阱）。
+- **可判定判据（M1 开工时固化）**：开工（立 `docs/plans/<日期>-m1-tasks.md`）时建立小型固定评测集——3–5 段真实对话日志 × 若干预算档位，人工标注 must-survive 信息清单；此后“压缩质量”只认两条机器可判的硬指标：① 压缩后实测 token ≤ 预算声明；② must-survive 清单在压缩输出中全部保留。停损由硬指标触发，不走主观判断。
 - **明确不做**：多种压缩策略、语义卸载高级玩法、向量记忆、**一切发布动作**。
 - **验收**（07 M1 清单）：only-context（fake LLM）跑通；隔离安装绿；真实日志调参记录成底稿（为 M5 的 deep-dive 攒素材）。
-- **停损**：真实负载上压缩质量不可接受 → 先补策略。无发布承诺，顺延零成本。
+- **停损**：评测集硬指标不达标 → 先补策略，同一评测集复测。无发布承诺，顺延零成本。
 
 ### M2 · 组件三连（3–4 周）
 
 - **使命**：证明"组件可以一个接一个长出来"是流水而非巧合——顺序本身就是对内核的二次复检。
 - **顺序**：memory（含 memory 契约检查项）→ policy → sandbox（平台依赖最重，放最后）。
 - **每包固定节奏**：实现 → only-\* → 契约套件绿 → 隔离安装绿（发布统一在 M5）。
+- **端口冒烟保险**：三包的端口签名在 M3 前没有真实循环消费者——memory 完成后写一次性 micro-loop（fake Provider + 真 memory/policy 喂一个傻循环）冒烟端口签名；一次性脚本，不作为交付物，只为压缩 M3 修订期的返工面。
+- **超时砍序**：砍实现范围不砍验收；sandbox 预案为先延 DockerRuntime、保 SubprocessRuntime。
+- **平台纪律**：开发机是 Windows、CI 以 Linux 为主——sandbox / policy 的平台差异（asyncio subprocess、路径、权限模型）在开工时显式决定测试的标注与跳过策略，不允许“本地全绿”实为单平台绿。
 - **明确不做**：向量 provider（Markdown 先行——向量检索正是给第三方 Memory2 留的位置）、云沙箱后端。
 - **验收**（07 M2 清单）：三包 only-\* 全绿；tutelary-memory 过自家契约套件。
 - **停损**：任一包写不出 only-\* → 停下修边界，不硬写——裁判报警是流程在正常工作。
