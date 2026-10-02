@@ -53,8 +53,10 @@
 随 core 发布：`pip install "tutelary-core[contract]"`，pytest 插件入口：
 
 ```bash
-pytest --tutelary-contract=memory --tutelary-factory=my_pkg.tests.make_memory
+pytest --tutelary-contract=memory --tutelary-factory=my_pkg:MyMemory
 ```
+
+套件发现与工厂契约：各实现包经入口点组 `tutelary.contract_suites` 注册自己的套件（port 名 → 套件模块），core 只做发现与执行——内核零依赖、零反向 import。`--tutelary-factory` 直接指向被测**组件类**；套件用 core 装配器与 core fakes 把它装配起来驱动——契约检查的不只是行为，还有"能作为组件被装配"本身。第一个就绪的套件是 context（M1），memory 随 M2。
 
 以 memory 为例，套件固定检查：
 

@@ -71,7 +71,7 @@ runtime(伞包) ──► { context, memory, sandbox, policy, providers, engine 
 
 ## 5. 隔离安装测试（à la carte 的机器证明）
 
-CI matrix：对每个组件包，建独立 venv，**只安装该包 + tutelary-core + pytest**，跑该包测试。任何"顺手 import 了兄弟包"或"顶层拖进重依赖"都会在这里爆红。
+CI matrix：对每个组件包，建独立 venv，**只安装该包 + tutelary-core + pytest（及包内测试所需的最小测试依赖，如 pytest-asyncio）**，跑该包测试。任何"顺手 import 了兄弟包"或"顶层拖进重依赖"都会在这里爆红。
 
 此 job 的存在本身写进 README 作为卖点——它是"每个组件独立可装"的机器证明，几乎没有项目做这个。
 
