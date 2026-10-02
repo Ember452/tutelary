@@ -79,6 +79,15 @@ def parse(path: Path, agent_dir: str) -> MemoryEntry | None:
     return MemoryEntry(turn_id=turn_id, agent_id=agent, session_id=session, text=body.strip())
 
 
+def entry_id(root: Path, entry: MemoryEntry) -> str:
+    """条目的稳定引用：相对 root 的 posix 路径（MemoryHit.id 用）。"""
+    return (
+        entry_path(root, entry.agent_id, entry.session_id, entry.turn_id)
+        .relative_to(root)
+        .as_posix()
+    )
+
+
 def write_entry(root: Path, entry: MemoryEntry) -> Path:
     """落盘一条记忆（阻塞；经 to_thread 调用）。幂等：目标已存在即跳过。"""
     path = entry_path(root, entry.agent_id, entry.session_id, entry.turn_id)
