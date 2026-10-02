@@ -34,12 +34,11 @@ def _provider(chunks: list[dict], status: int = 200) -> OpenAICompatibleProvider
     )
 
 
-def _request(**overrides: object) -> LLMRequest:
+def _request() -> LLMRequest:
     return LLMRequest(
         model="default",
         messages=(Message(role="user", content=(TextBlock(text="hi"),)),),
-        **overrides,
-    )  # type: ignore[arg-type]
+    )
 
 
 async def test_text_and_usage_are_translated_in_order():
