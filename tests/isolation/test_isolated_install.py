@@ -14,6 +14,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 DIST_NAMES = {
     "core": "tutelary-core",
     "context": "tutelary-context",
+    "engine": "tutelary-engine",
     "memory": "tutelary-memory",
     "policy": "tutelary-policy",
     "providers": "tutelary-providers",

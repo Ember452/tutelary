@@ -11,6 +11,7 @@ DIST_NAMES = (
     "tutelary-context",
     "tutelary-memory",
     "tutelary-policy",
+    "tutelary-engine",
     "tutelary-providers",
     "tutelary-sandbox",
 )
