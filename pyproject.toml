@@ -32,9 +32,15 @@ testpaths = ["packages", "tests"]
 [tool.ruff]
 target-version = "py313"
 line-length = 100
+# docs/ 是手写设计文档：ruff 0.16 会重排 markdown 里的 python 代码块，
+# 造成基线文档的无谓 diff，显式排除。
+extend-exclude = ["docs"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "UP", "B", "SIM", "RUF"]
+# RUF001/002/003 把全角标点当"易混淆 Unicode"——中文注释与 docstring 是
+# 项目规范（AGENTS §4.8/§4.10），这三条对本项目是纯噪声，有意关闭。
+ignore = ["RUF001", "RUF002", "RUF003"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["tutelary"]
