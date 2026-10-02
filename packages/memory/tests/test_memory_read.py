@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from tutelary.core.events import FakeBus
+from tutelary.core.fakes import FakeBus
 from tutelary.core.types import MemoryScope
 from tutelary.memory.errors import MarkdownMemoryError
 from tutelary.memory.provider import MarkdownMemoryConfig, MarkdownProvider
