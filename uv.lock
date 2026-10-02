@@ -12,6 +12,7 @@ members = [
     "tutelary-policy",
     "tutelary-providers",
     "tutelary-sandbox",
+    "tutelary-workspace",
 ]
 
 [[package]]
@@ -303,26 +304,26 @@ wheels = [
 [[package]]
 name = "tutelary"
 version = "0.1.0"
-source = { virtual = "." }
-
-[package.dev-dependencies]
-dev = [
-    { name = "pyright" },
-    { name = "pytest" },
-    { name = "pytest-asyncio" },
-    { name = "pytest-cov" },
-    { name = "ruff" },
+source = { editable = "packages/runtime" }
+dependencies = [
+    { name = "tutelary-context" },
+    { name = "tutelary-core" },
+    { name = "tutelary-engine" },
+    { name = "tutelary-memory" },
+    { name = "tutelary-policy" },
+    { name = "tutelary-providers" },
+    { name = "tutelary-sandbox" },
 ]
 
 [package.metadata]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "pyright", specifier = ">=1.1.390" },
-    { name = "pytest", specifier = ">=8.3" },
-    { name = "pytest-asyncio", specifier = ">=1.0" },
-    { name = "pytest-cov", specifier = ">=6.0" },
-    { name = "ruff", specifier = ">=0.9" },
+requires-dist = [
+    { name = "tutelary-context", editable = "packages/context" },
+    { name = "tutelary-core", editable = "packages/core" },
+    { name = "tutelary-engine", editable = "packages/engine" },
+    { name = "tutelary-memory", editable = "packages/memory" },
+    { name = "tutelary-policy", editable = "packages/policy" },
+    { name = "tutelary-providers", editable = "packages/providers" },
+    { name = "tutelary-sandbox", editable = "packages/sandbox" },
 ]
 
 [[package]]
@@ -408,6 +409,31 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [{ name = "tutelary-core", editable = "packages/core" }]
+
+[[package]]
+name = "tutelary-workspace"
+version = "0.1.0"
+source = { virtual = "." }
+
+[package.dev-dependencies]
+dev = [
+    { name = "pyright" },
+    { name = "pytest" },
+    { name = "pytest-asyncio" },
+    { name = "pytest-cov" },
+    { name = "ruff" },
+]
+
+[package.metadata]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "pyright", specifier = ">=1.1.390" },
+    { name = "pytest", specifier = ">=8.3" },
+    { name = "pytest-asyncio", specifier = ">=1.0" },
+    { name = "pytest-cov", specifier = ">=6.0" },
+    { name = "ruff", specifier = ">=0.9" },
+]
 
 [[package]]
 name = "typing-extensions"
