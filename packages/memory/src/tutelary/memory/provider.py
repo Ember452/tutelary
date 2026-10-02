@@ -11,8 +11,8 @@ import asyncio
 from dataclasses import dataclass
 from pathlib import Path
 
-from tutelary.core.events import Bus
-from tutelary.core.lifecycle import Component
+from tutelary.core.events import Bus, TurnCommitted
+from tutelary.core.lifecycle import Component, Disposable
 from tutelary.core.ports import Memory
 from tutelary.core.types import MemoryHit, MemoryScope
 from tutelary.memory import store
@@ -69,6 +69,20 @@ class MarkdownProvider(Component):
         """召回结果按空行拼接；无命中返回空串。"""
         hits = await self.recall(query, scope)
         return "\n\n".join(hit.text for hit in hits)
+
+    def setup(self) -> Disposable | None:
+        """订阅 TurnCommitted 作为写路径；Disposable 进 effect 栈，卸载即停写。"""
+
+        async def on_committed(event: TurnCommitted) -> None:
+            entry = store.MemoryEntry(
+                turn_id=event.turn_id,
+                agent_id=store.SHARED_AGENT,
+                session_id=event.session_id,
+                text=event.text,
+            )
+            await asyncio.to_thread(store.write_entry, self._root, entry)
+
+        return self._bus.observe(TurnCommitted, on_committed)
 
     def seed(self, scope: MemoryScope, text: str) -> str:
         """播种一条记忆（docs/04 §4 的套件测试面）；返回条目 id。
