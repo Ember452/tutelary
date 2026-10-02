@@ -5,6 +5,9 @@ description = "Tutelary memory: markdown-backed Memory port implementation with 
 requires-python = ">=3.13"
 dependencies = ["tutelary-core==0.1.0"]
 
+[project.entry-points."tutelary.contract_suites"]
+memory = "tutelary.memory.contract"
+
 [tool.uv.sources]
 tutelary-core = { workspace = true }
 

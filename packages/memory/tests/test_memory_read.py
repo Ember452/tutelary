@@ -7,7 +7,7 @@ import pytest
 from tutelary.core.fakes import FakeBus
 from tutelary.core.types import MemoryScope
 from tutelary.memory.errors import MarkdownMemoryError
-from tutelary.memory.provider import MarkdownMemoryConfig, MarkdownProvider
+from tutelary.memory.provider import DEFAULT_ROOT, MarkdownMemoryConfig, MarkdownProvider
 
 _SCOPE = MemoryScope(agent_id="a1", session_id="s1")
 
@@ -16,9 +16,9 @@ def _provider(tmp_path: Path) -> MarkdownProvider:
     return MarkdownProvider(FakeBus(), config=MarkdownMemoryConfig(root=tmp_path))
 
 
-def test_config_requires_root():
-    with pytest.raises(ValueError, match="root"):
-        MarkdownMemoryConfig.model_validate({})
+def test_config_defaults_to_cwd_store():
+    config = MarkdownMemoryConfig.model_validate({})
+    assert config.root == DEFAULT_ROOT
 
 
 def test_config_rejects_file_as_root(tmp_path: Path):

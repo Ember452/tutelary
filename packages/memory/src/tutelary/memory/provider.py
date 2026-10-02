@@ -24,19 +24,18 @@ DEFAULT_ROOT = Path("tutelary-memory")
 
 @dataclass(frozen=True, slots=True)
 class MarkdownMemoryConfig:
-    """markdown 后端配置；root 是唯一的必配项。"""
+    """markdown 后端配置；root 缺省为当前工作目录下的 ``tutelary-memory/``。"""
 
-    root: Path
+    root: Path = DEFAULT_ROOT
 
     @classmethod
     def model_validate(cls, data: dict[str, object]) -> MarkdownMemoryConfig:
-        try:
-            config = cls(root=Path(str(data["root"])))
-        except (KeyError, TypeError) as exc:
-            raise ValueError(f"markdown 记忆配置需要 root：{exc}") from exc
-        if config.root.exists() and not config.root.is_dir():
-            raise MarkdownMemoryError(f"配置的 root 已存在且不是目录：{config.root}")
-        return config
+        if not isinstance(data, dict):
+            raise ValueError(f"配置必须是映射，得到 {type(data).__name__}")
+        root = Path(str(data["root"])) if "root" in data else DEFAULT_ROOT
+        if root.exists() and not root.is_dir():
+            raise MarkdownMemoryError(f"配置的 root 已存在且不是目录：{root}")
+        return cls(root=root)
 
 
 class MarkdownProvider(Component):
