@@ -8,6 +8,7 @@ members = [
     "tutelary-context",
     "tutelary-core",
     "tutelary-memory",
+    "tutelary-policy",
 ]
 
 [[package]]
@@ -282,6 +283,17 @@ provides-extras = ["contract"]
 name = "tutelary-memory"
 version = "0.1.0"
 source = { editable = "packages/memory" }
+dependencies = [
+    { name = "tutelary-core" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "tutelary-core", editable = "packages/core" }]
+
+[[package]]
+name = "tutelary-policy"
+version = "0.1.0"
+source = { editable = "packages/policy" }
 dependencies = [
     { name = "tutelary-core" },
 ]
