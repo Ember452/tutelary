@@ -11,7 +11,12 @@ from pathlib import Path
 import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-DIST_NAMES = {"core": "tutelary-core", "context": "tutelary-context", "memory": "tutelary-memory"}
+DIST_NAMES = {
+    "core": "tutelary-core",
+    "context": "tutelary-context",
+    "memory": "tutelary-memory",
+    "policy": "tutelary-policy",
+}
 
 
 def _wheel_for(built_wheels: Path, dist_name: str) -> Path:
