@@ -16,6 +16,7 @@ DIST_NAMES = {
     "context": "tutelary-context",
     "memory": "tutelary-memory",
     "policy": "tutelary-policy",
+    "providers": "tutelary-providers",
     "sandbox": "tutelary-sandbox",
 }
 
