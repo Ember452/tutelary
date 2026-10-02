@@ -12,6 +12,9 @@ from _walk import EXAMPLES_ROOT, REPO_ROOT
 
 def test_only_examples_smoke():
     examples = sorted(EXAMPLES_ROOT.glob("only-*.py"))
+    ship = EXAMPLES_ROOT / "full-agent" / "run.py"
+    if ship.exists():
+        examples.append(ship)  # M3 起，整船示例一并纳入冒烟（docs/05 §4 门禁 6）
     assert examples, "examples/ 下没有任何 only-* 示例"
     for example in examples:
         result = subprocess.run(
