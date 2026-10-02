@@ -5,6 +5,7 @@ requires-python = ">=3.13"
 [manifest]
 members = [
     "tutelary",
+    "tutelary-context",
     "tutelary-core",
 ]
 
@@ -250,6 +251,17 @@ dev = [
     { name = "pytest-cov", specifier = ">=6.0" },
     { name = "ruff", specifier = ">=0.9" },
 ]
+
+[[package]]
+name = "tutelary-context"
+version = "0.1.0"
+source = { editable = "packages/context" }
+dependencies = [
+    { name = "tutelary-core" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "tutelary-core", editable = "packages/core" }]
 
 [[package]]
 name = "tutelary-core"
