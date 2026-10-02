@@ -26,7 +26,7 @@
 | Memory | recall 无命中返回 `[]` 不抛错；写路径订阅 `TurnCommitted` 且幂等消费 | 读路径阻塞事件循环；把大对象塞进 `MemoryHit` |
 | Sandbox | acquire 失败抛类型化错误；Executor 关闭时回收全部资源；**默认断网**，开放网络须显式 | 在 acquire 里执行用户代码 |
 
-## 3. 事件协议（14 个基线事件）
+## 3. 事件协议（15 个基线事件）
 
 | 事件 | 时机 | 关键字段 |
 |---|---|---|
@@ -42,17 +42,18 @@
 | `CompactStarted` | 压缩开始 | reason, tokens_before |
 | `CompactNotification` | 压缩完成 | summary, tokens_after |
 | `TurnComplete` | 回合结束 | turn_id, usage |
+| `TurnCommitted` | 回合内容落定（记忆写路径的统一消费点） | turn_id, text, session_id |
 | `LoopComplete` | 运行结束 | session_id |
 | `ErrorEvent` | 错误 | error, phase |
 
-规则：事件 frozen；新增事件走 ADR（minor）；组件不得假设别人订阅了什么；`intercept` 链只允许用于 SPI 类事件，流式增量（StreamText/ThinkingText）不设拦截。
+规则：事件 frozen；新增事件走 ADR（minor）；组件不得假设别人订阅了什么；`intercept` 链只允许用于 SPI 类事件，流式增量（StreamText/ThinkingText）不设拦截。`TurnCommitted` 是 M0 实现期补入的——Memory 写路径契约依赖它，基线清单原本漏了它。
 
 ## 4. 契约测试套件（中立性的机器证明）
 
 随 core 发布：`pip install "tutelary-core[contract]"`，pytest 插件入口：
 
 ```bash
-pytest --tutelary-contract=memory --memory-factory=my_pkg.tests.make_memory
+pytest --tutelary-contract=memory --tutelary-factory=my_pkg.tests.make_memory
 ```
 
 以 memory 为例，套件固定检查：

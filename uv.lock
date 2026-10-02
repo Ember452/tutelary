@@ -256,6 +256,15 @@ name = "tutelary-core"
 version = "0.1.0"
 source = { editable = "packages/core" }
 
+[package.optional-dependencies]
+contract = [
+    { name = "pytest" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "pytest", marker = "extra == 'contract'", specifier = ">=8" }]
+provides-extras = ["contract"]
+
 [[package]]
 name = "typing-extensions"
 version = "4.16.0"

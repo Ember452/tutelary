@@ -15,7 +15,10 @@ tutelary/core/
 ├── events.py       # ② 事件协议与总线
 ├── ports.py        # ③ 五端口签名
 ├── lifecycle.py    # ④ 生命周期原语：Component / Disposable / effect 栈
-└── assembler.py    # ⑤ 装配器（fail-fast 解析）
+├── assembler.py    # ⑤ 装配器（fail-fast 解析）
+├── errors.py       # ⑥ 类型化错误（M0 实现期增补，被 ①–⑤ 共同引用）
+├── contract.py     # 契约测试插件骨架（[contract] extra，见 04 §4）
+└── fakes/          # 随契约发布的假实现（见 08 §2）
 ```
 
 ①–③ 是"词"，④–⑤ 是"法"。
@@ -103,6 +106,8 @@ class Component:
     def setup(self) -> Disposable | None:
         """副作用登记：订阅、连接、启动后台任务。返回清理函数（挂 effect 栈）或 None。"""
 ```
+
+组件**不必继承** `Component`：装配器按类属性鸭子读取 `provides` / `requires` / `config_model`，无 `setup` 视为无副作用——端口实现可以直接声明成组件（M0 实现期确认）。
 
 `Disposable` = `Callable[[], Awaitable[None]]` 或实现 `aclose()` 的对象。
 

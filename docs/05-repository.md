@@ -62,7 +62,7 @@ runtime(伞包) ──► { context, memory, sandbox, policy, providers, engine 
 
 `tests/architecture/` 下 6 条 pytest（AST import 图）：
 
-1. `test_core_zero_dependencies`——core 的 import ⊆ 标准库 ∪ tutelary；
+1. `test_core_zero_dependencies`——core 的 import ⊆ 标准库 ∪ tutelary（唯一例外：`contract.py` 可 import pytest——随包发布的契约插件，pytest 属 `[contract]` extra，不进运行时依赖）；
 2. `test_no_horizontal_imports`——组件包只准 import core 与自身子模块；
 3. `test_umbrella_direction`——任何子包禁止 import `tutelary.runtime`（伞包只进不出）；
 4. `test_lazy_heavy_imports`——docker/grpc/torch 等重依赖禁止出现在模块顶层（函数体内合法）；
