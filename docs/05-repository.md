@@ -63,11 +63,11 @@ runtime(伞包) ──► { context, memory, sandbox, policy, providers, engine 
 `tests/architecture/` 下 6 条 pytest（AST import 图）：
 
 1. `test_core_zero_dependencies`——core 的 import ⊆ 标准库 ∪ tutelary（唯一例外：`contract.py` 可 import pytest——随包发布的契约插件，pytest 属 `[contract]` extra，不进运行时依赖）；
-2. `test_no_horizontal_imports`——组件包只准 import core 与自身子模块；
+2. `test_no_horizontal_imports`——组件包只准 import core 与自身子模块（伞包 runtime 除外——它是组装者，准许依赖全部组件；伞包只进不出由门禁 3 看守）；
 3. `test_umbrella_direction`——任何子包禁止 import `tutelary.runtime`（伞包只进不出）；
 4. `test_lazy_heavy_imports`——docker/grpc/torch 等重依赖禁止出现在模块顶层（函数体内合法）；
 5. `test_no_domain_vocabulary`——core 源码禁止出现具体产品/场景词；
-6. `test_only_examples_smoke`——`examples/only-*.py` 全部纳入 CI 冒烟（fake LLM，不联网）。
+6. `test_only_examples_smoke`——`examples/only-*.py` 与 full-agent 整船示例全部纳入 CI 冒烟（fake LLM，不联网）。
 
 ## 5. 隔离安装测试（à la carte 的机器证明）
 
