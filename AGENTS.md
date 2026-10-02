@@ -38,7 +38,7 @@ inverts: docs are the contract.
 - Tests: **pytest** (asyncio in auto mode).
 
 ```bash
-uv sync                                 # set up / update the environment
+uv sync --all-packages                  # set up / update the environment
 uv run ruff check .                     # lint
 uv run ruff format .                    # format
 uv run pytest                           # all tests
