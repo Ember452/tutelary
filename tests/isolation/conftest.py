@@ -13,6 +13,7 @@ DIST_NAMES = (
     "tutelary-policy",
     "tutelary-engine",
     "tutelary-providers",
+    "tutelary",
     "tutelary-sandbox",
 )
 

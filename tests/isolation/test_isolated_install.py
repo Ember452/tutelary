@@ -18,6 +18,7 @@ DIST_NAMES = {
     "memory": "tutelary-memory",
     "policy": "tutelary-policy",
     "providers": "tutelary-providers",
+    "runtime": "tutelary",
     "sandbox": "tutelary-sandbox",
 }
 
@@ -36,10 +37,14 @@ def test_isolated_install(package: str, built_wheels: Path, tmp_path: Path):
         ["uv", "venv", "-q", "--python", "3.13", str(venv)], check=True, capture_output=True
     )
     python = venv / ("Scripts/python.exe" if sys.platform == "win32" else "bin/python")
-    wanted = [
-        _wheel_for(built_wheels, "tutelary-core"),
-        _wheel_for(built_wheels, DIST_NAMES[package]),
-    ]
+    if package == "runtime":
+        # 伞包 = 整船：隔离测试安装全部 wheel（docs/05 §2 的"整船"形态）
+        wanted = sorted(built_wheels.glob("*.whl"))
+    else:
+        wanted = [
+            _wheel_for(built_wheels, "tutelary-core"),
+            _wheel_for(built_wheels, DIST_NAMES[package]),
+        ]
     # 包内测试需要 pytest + pytest-asyncio（asyncio_mode=auto 来自根配置）
     subprocess.run(
         [
