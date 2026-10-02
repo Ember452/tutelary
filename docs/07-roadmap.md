@@ -53,6 +53,7 @@ orchestration（多 Agent 编排）、observe（trace/回放查看器）、MCP�
 ## 2. 发布纪律
 
 - M5 之前不公开发布——全部组件过 only-\* 与双裁判之后才首发；
+- 公开发布的**最终时点由项目所有者决定**：里程碑只负责把项目带到“随时可发”的就绪态，发布本身是独立的显式决定，不排期、不自动触发；
 - 版本 lockstep（[ADR-0003](decisions/0003-lockstep-versioning.md)），tag 驱动全量发布；
 - 每次公开发布三件套：README 更新、CHANGELOG、至少一篇 deep-dive 文档。
 
