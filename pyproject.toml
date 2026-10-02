@@ -26,9 +26,14 @@ dev = [
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "session"
 # importlib 模式：各包 tests/ 无 __init__.py，M2 起多包同名测试文件不冲突；
-# -p pytester：启用契约插件骨架的测试装置（packages/core/tests/test_contract.py）
-addopts = "--import-mode=importlib -p pytester"
+# -p pytester：启用契约插件骨架的测试装置（packages/core/tests/test_contract.py）；
+# -m 'not docker'：docker-marked 集成测试默认排除（AGENTS §4.7 独立车道），
+#   需要时显式 -m docker 运行。
+addopts = "--import-mode=importlib -p pytester -m 'not docker'"
 testpaths = ["packages", "tests"]
+markers = [
+    "docker: 需要 Docker 守护进程的集成测试（默认排除，本机或 CI 按需 -m docker 开启）",
+]
 
 [tool.ruff]
 target-version = "py313"
