@@ -37,8 +37,8 @@ def entry_dir(root: Path, agent_id: str, session_id: str | None) -> Path:
 
 
 def safe_stem(turn_id: str) -> str:
-    """把 turn_id 规范化成文件名安全片段（危险字符一律换下划线）。"""
-    cleaned = _UNSAFE_FILENAME.sub("_", turn_id)
+    """把 turn_id 规范化成文件名安全片段（危险字符与开头连点一律替换）。"""
+    cleaned = _UNSAFE_FILENAME.sub("_", turn_id).lstrip(".")
     return cleaned or "entry"
 
 
@@ -92,9 +92,9 @@ def write_entry(root: Path, entry: MemoryEntry) -> Path:
 def read_entries(root: Path, scope: MemoryScope) -> list[MemoryEntry]:
     """读取 scope 可见的全部条目（阻塞；经 to_thread 调用）。
 
-    可见性：本 agent 段 + ``_shared`` 段；agent 级查询（session=None）
-    看到该 agent 全部会话与全局条目。顺序 = 文件名字典序——引擎用单调
-    turn_id 时即时间序。
+    可见性：本 agent 段 + ``_shared`` 段（``_shared`` 只解除 agent 隔离，
+    会话过滤照常生效）；agent 级查询（session=None）看到该 agent 全部
+    会话与全局条目。顺序 = 文件名字典序——引擎用单调 turn_id 时即时间序。
     """
     agent_dirs = [root / scope.agent_id, root / SHARED_AGENT]
     entries: list[MemoryEntry] = []

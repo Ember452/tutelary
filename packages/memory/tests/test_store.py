@@ -47,14 +47,16 @@ def test_global_session_lands_in_global_dir(tmp_path: Path):
 def test_visibility_agent_and_session(tmp_path: Path):
     write_entry(tmp_path, _entry(turn_id="own"))
     write_entry(tmp_path, _entry(turn_id="shared", agent="_shared", session="s2"))
+    write_entry(tmp_path, _entry(turn_id="shared-global", agent="_shared", session=None))
     write_entry(tmp_path, _entry(turn_id="other-agent", agent="a2"))
     write_entry(tmp_path, _entry(turn_id="other-session", session="s9"))
 
+    # _shared 只解除 agent 隔离，会话过滤照常生效
     seen = {e.turn_id for e in read_entries(tmp_path, MemoryScope(agent_id="a1", session_id="s1"))}
-    assert seen == {"own", "shared"}
+    assert seen == {"own", "shared-global"}
 
     seen_agent_wide = {e.turn_id for e in read_entries(tmp_path, MemoryScope(agent_id="a1"))}
-    assert seen_agent_wide == {"own", "other-session", "shared"}
+    assert seen_agent_wide == {"own", "other-session", "shared", "shared-global"}
 
 
 def test_read_entries_on_missing_root_is_empty(tmp_path: Path):
