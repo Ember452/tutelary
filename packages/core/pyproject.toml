@@ -5,6 +5,12 @@ description = "Tutelary contract kernel: vocabulary, events and bus, five ports,
 requires-python = ">=3.13"
 dependencies = []
 
+[project.optional-dependencies]
+contract = ["pytest>=8"]
+
+[project.entry-points.pytest11]
+tutelary-contract = "tutelary.core.contract"
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"

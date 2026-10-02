@@ -25,8 +25,9 @@ dev = [
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "session"
-# importlib 模式：各包 tests/ 无 __init__.py，M2 起多包同名测试文件不冲突
-addopts = "--import-mode=importlib"
+# importlib 模式：各包 tests/ 无 __init__.py，M2 起多包同名测试文件不冲突；
+# -p pytester：启用契约插件骨架的测试装置（packages/core/tests/test_contract.py）
+addopts = "--import-mode=importlib -p pytester"
 testpaths = ["packages", "tests"]
 
 [tool.ruff]

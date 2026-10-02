@@ -28,4 +28,5 @@ Desktop.ini
 # --- IDE ---
 .idea/
 .vscode/
+.zcode/
 *.swp
