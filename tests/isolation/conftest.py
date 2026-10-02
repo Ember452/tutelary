@@ -6,7 +6,13 @@ from pathlib import Path
 import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-DIST_NAMES = ("tutelary-core", "tutelary-context", "tutelary-memory", "tutelary-policy")
+DIST_NAMES = (
+    "tutelary-core",
+    "tutelary-context",
+    "tutelary-memory",
+    "tutelary-policy",
+    "tutelary-sandbox",
+)
 
 
 @pytest.fixture(scope="session")
