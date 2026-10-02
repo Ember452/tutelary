@@ -5,6 +5,9 @@ description = "Tutelary memory: markdown-backed Memory port implementation with 
 requires-python = ">=3.13"
 dependencies = ["tutelary-core==0.1.0"]
 
+[tool.uv.sources]
+tutelary-core = { workspace = true }
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"

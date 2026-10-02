@@ -7,6 +7,7 @@ members = [
     "tutelary",
     "tutelary-context",
     "tutelary-core",
+    "tutelary-memory",
 ]
 
 [[package]]
@@ -276,6 +277,17 @@ contract = [
 [package.metadata]
 requires-dist = [{ name = "pytest", marker = "extra == 'contract'", specifier = ">=8" }]
 provides-extras = ["contract"]
+
+[[package]]
+name = "tutelary-memory"
+version = "0.1.0"
+source = { editable = "packages/memory" }
+dependencies = [
+    { name = "tutelary-core" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "tutelary-core", editable = "packages/core" }]
 
 [[package]]
 name = "typing-extensions"
