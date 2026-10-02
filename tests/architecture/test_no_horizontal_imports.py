@@ -1,12 +1,17 @@
-"""门禁 2（docs/05 §4）：组件包只准 import core 与自身子模块——零横向依赖。"""
+"""门禁 2（docs/05 §4）：组件包只准 import core 与自身子模块——零横向依赖。
+
+豁免：伞包 runtime 是组装者（docs/05 §3），准许依赖全部组件；伞包
+只进不出由门禁 3 看守。
+"""
 
 from _walk import absolute_imports, component_names, package_sources
 
 
 def test_no_horizontal_imports():
+    all_names = component_names()
     violations: list[str] = []
-    for name in component_names():
-        allowed_subpackages = {"core", name}
+    for name in all_names:
+        allowed_subpackages = {"core", *all_names} if name == "runtime" else {"core", name}
         for source in package_sources(name):
             for module in absolute_imports(source.tree):
                 if not module.startswith("tutelary"):
