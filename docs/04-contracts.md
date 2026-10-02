@@ -60,6 +60,8 @@ pytest --tutelary-contract=memory --tutelary-factory=my_pkg:MyMemory
 
 以 memory 为例，套件固定检查：
 
+实现需暴露 `seed(scope, text) -> str` 作为播种测试面（端口本身无写方法，写路径走事件），且可无配置装配（内置默认即可用）。
+
 1. 种子内容后，同 scope 下 `recall` 命中；
 2. `load_context` 返回内容包含种子内容；
 3. 订阅 Bus 后派发 `TurnCommitted`，内容落库；重复派发，幂等；

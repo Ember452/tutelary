@@ -22,7 +22,7 @@
 
 ## 当前状态
 
-2026-10-02：设计基线定稿（01–07 + ADR×3）；M0 完成（core 内核 + 门禁）；M1 机制完成——context 旗舰组件、契约套件机制（context 首个消费者）、隔离安装矩阵、only-context 示例，**验收待真实对话日志**（见 [09](09-development-plan.md) M1 与 [评测集](../packages/context/evals/README.md)）。
+2026-10-02：设计基线定稿（01–07 + ADR×3）；M0 与 M2 完成（core 内核 + 门禁；memory / policy / sandbox 三连）；M1 机制完成——context 旗舰组件、契约套件机制、隔离安装矩阵，**验收待真实对话日志**（见 [09](09-development-plan.md) M1 与 [评测集](../packages/context/evals/README.md)）。下一阶段 M3（整船与终审）。
 
 文档的约束力分层：**01/02 与 ADR 记录的是"为什么"**，是决策，改动要慎重；**03/04 的签名是工作草案**——M5 公开发布前随实现直接修订，发布后才成为兼容承诺（见 [04 §5](04-contracts.md)）。发布前代码说了算，文档跟上。
 
