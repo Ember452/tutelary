@@ -1,0 +1,77 @@
+{
+  "implementation": "builtin-markdown",
+  "workload": "memory-workload-v0",
+  "repeats": 3,
+  "metrics": {
+    "recall_hit_rate": 1.0,
+    "mean_precision": 1.0,
+    "scope_isolation_ok": true,
+    "latency_p50_ms": 0.476,
+    "latency_p95_ms": 0.604
+  },
+  "per_query": [
+    {
+      "query": "回滚",
+      "expected": [
+        "deploy-window"
+      ],
+      "hit_rate_passes": 3,
+      "precision_mean": 1.0
+    },
+    {
+      "query": "迁移",
+      "expected": [
+        "db-migration"
+      ],
+      "hit_rate_passes": 3,
+      "precision_mean": 1.0
+    },
+    {
+      "query": "预算",
+      "expected": [
+        "budget"
+      ],
+      "hit_rate_passes": 3,
+      "precision_mean": 1.0
+    },
+    {
+      "query": "灰度",
+      "expected": [
+        "gray-release"
+      ],
+      "hit_rate_passes": 3,
+      "precision_mean": 1.0
+    },
+    {
+      "query": "安排",
+      "expected": [
+        "db-migration"
+      ],
+      "hit_rate_passes": 3,
+      "precision_mean": 1.0
+    },
+    {
+      "query": "值班",
+      "expected": [
+        "oncall"
+      ],
+      "hit_rate_passes": 3,
+      "precision_mean": 1.0
+    },
+    {
+      "query": "时间",
+      "expected": [
+        "oncall",
+        "meeting"
+      ],
+      "hit_rate_passes": 3,
+      "precision_mean": 1.0
+    },
+    {
+      "query": "不存在的关键词",
+      "expected": [],
+      "hit_rate_passes": 3,
+      "precision_mean": 1.0
+    }
+  ]
+}
