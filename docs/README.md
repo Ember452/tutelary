@@ -19,6 +19,7 @@
 | [06 扩展指南](06-extending.md) | 第三方实现（如 Memory2）怎么接入 | 组件作者 |
 | [07 路线图](07-roadmap.md) | 里程碑、验收裁判、发布节奏 | 所有人 |
 | [决策记录](decisions/) | 关键取舍的 Why 与重评条件 | 贡献者 |
+| [deep-dive](deep-dive/context-budget.md) | 机制长文：上下文预算治理是怎么做的 | 所有人 |
 
 ## 当前状态
 

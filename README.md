@@ -110,7 +110,7 @@ async for event in agent.run("帮我跑一下构建"):
 
 ## 状态
 
-设计基线定稿，M0–M4 完成（内核、旗舰、组件三连、整船双裁判、基准与 Mem0 adapter）；M5 发布就绪进行中。v2 展望：多 Agent 编排、trace/回放、MCP、skills。详见[开发计划](docs/09-development-plan.md)。
+设计基线定稿，M0–M4 完成（内核、旗舰、组件三连、整船双裁判、基准与 Mem0 adapter）；M5 发布就绪态达成（社区门面齐备、九包 wheel 可构建）。v2 展望：多 Agent 编排、trace/回放、MCP、skills。详见[开发计划](docs/09-development-plan.md)。
 
 ## 协议
 
