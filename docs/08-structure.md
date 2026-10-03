@@ -19,7 +19,8 @@ tutelary/                      # GitHub 仓库 = uv workspace 根
 ├── docs/                      # 本文档集（地图见 README）
 ├── tests/
 │   ├── architecture/          # 跨包边界门禁：AST import 图 + 6 条规则（见 05 §4）
-│   └── isolation/             # 隔离安装测试的矩阵定义（见 05 §5）
+│   ├── isolation/             # 隔离安装测试的矩阵定义（见 05 §5）
+├── benchmarks/                # 基准套件（见 07 M4）：接契约的实现一键跑分
 └── .github/
     ├── workflows/             # test.yml（测试+门禁）/ publish.yml（tag 驱动全量发布）
     ├── ISSUE_TEMPLATE/        # bug / feature / component-proposal
@@ -53,6 +54,8 @@ packages/<pkg>/
 ```
 
 **Fake 随契约发布**（借鉴 annona-spi 的 `spi/fake/`）：core 附带零依赖假实现（FakeProvider / FakeMemory / FakeSandbox / FakeBus），与契约同版本发布。三个作用：① 各组件包与下游用户的测试不依赖真实 LLM / Docker；② only-\* 示例的"不联网"由标准 fake 供给，不再各写各的；③ 第三方实现有行为基线可对照。
+
+**第三方形态的官方 adapter**：`tutelary-mem0-adapter`（导入名 `tutelary_mem0_adapter`）按 [01 §5](01-positioning.md) 的生态形态发布在 packages/ 内——mem0ai 为可选 extra、惰性导入。它不在上表八组件之列，是"第二实现检验"的常驻示例（docs/07 M4）。
 
 包内布局刻意**不做** annona 式统一分层模板（controller/service/repository 那套）：Python 包粒度小，模板是 Java 大模块的产物；边界由架构测试管，不由目录模板管。
 

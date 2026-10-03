@@ -99,5 +99,5 @@ core+门禁      context+自用    memory/policy/sandbox   engine+伞包+双裁�
 - [ ] M1 旗舰与自用验证
 - [x] M2 组件三连（2026-10-02 完成）
 - [x] M3 整船与终审（2026-10-02 完成）
-- [ ] M4 立中立
+- [ ] M4 立中立（机制完成：基准 v0 + 官方 Mem0 adapter；对比报告的 Mem0 行待 API 环境）
 - [ ] M5 全量首发

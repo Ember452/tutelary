@@ -14,7 +14,9 @@ def test_no_horizontal_imports():
         allowed_subpackages = {"core", *all_names} if name == "runtime" else {"core", name}
         for source in package_sources(name):
             for module in absolute_imports(source.tree):
-                if not module.startswith("tutelary"):
+                # 只看 tutelary 命名空间：第三方形态的顶层名（如
+                # tutelary_mem0_adapter.*）是包自己的子模块，不受此门禁管
+                if module != "tutelary" and not module.startswith("tutelary."):
                     continue
                 parts = module.split(".")
                 sub = parts[1] if len(parts) > 1 else ""

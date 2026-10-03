@@ -4,7 +4,7 @@ from collections.abc import Mapping
 
 from tutelary.core.events import PermissionResponse, StreamText, ToolResultEvent, ToolUseEvent
 from tutelary.core.fakes import FakeMemory, FakeProvider
-from tutelary.core.types import Allow, Decision, Deny, Suspend, ToolCall, ToolResult, ToolSpec
+from tutelary.core.types import Allow, Decision, Suspend, ToolCall, ToolResult, ToolSpec
 from tutelary.engine.errors import NoPendingTurnError
 from tutelary.engine.loop import Engine
 

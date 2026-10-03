@@ -22,7 +22,7 @@
 
 ## 当前状态
 
-2026-10-02：设计基线定稿（01–07 + ADR×3）；M0、M2、M3 完成——core 内核 + 门禁、组件三连（memory / policy / sandbox）、providers / engine / runtime 伞包整船，双裁判全过；M1 机制完成，**验收待真实对话日志**（见 [09](09-development-plan.md) M1 与 [评测集](../packages/context/evals/README.md)）。下一阶段 M4（基准与 Mem0 中立性）。
+2026-10-02：设计基线定稿（01–07 + ADR×3）；M0、M2、M3 完成（内核+门禁、组件三连、整船双裁判全过）；M4 机制完成——基准 v0 + 官方 Mem0 adapter（第三方形态），**对比报告的 Mem0 行待 API 环境**；M1 验收待真实对话日志（见 [09](09-development-plan.md) 与 [评测集](../packages/context/evals/README.md)、[基准报告](../benchmarks/memory/REPORT.md)）。下一阶段 M5（发布就绪）。
 
 文档的约束力分层：**01/02 与 ADR 记录的是"为什么"**，是决策，改动要慎重；**03/04 的签名是工作草案**——M5 公开发布前随实现直接修订，发布后才成为兼容承诺（见 [04 §5](04-contracts.md)）。发布前代码说了算，文档跟上。
 
