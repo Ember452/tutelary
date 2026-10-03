@@ -15,6 +15,7 @@ DIST_NAMES = {
     "core": "tutelary-core",
     "context": "tutelary-context",
     "engine": "tutelary-engine",
+    "mem0_adapter": "tutelary-mem0-adapter",
     "memory": "tutelary-memory",
     "policy": "tutelary-policy",
     "providers": "tutelary-providers",
