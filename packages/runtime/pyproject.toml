@@ -3,6 +3,7 @@ name = "tutelary"
 version = "0.1.0"
 description = "Tutelary umbrella: the Agent facade, preset assembly and built-in tools - the sole composition root."
 requires-python = ">=3.13"
+license = { text = "Apache-2.0" }
 dependencies = [
     "tutelary-core==0.1.0",
     "tutelary-context==0.1.0",
@@ -12,6 +13,9 @@ dependencies = [
     "tutelary-providers==0.1.0",
     "tutelary-sandbox==0.1.0",
 ]
+
+[project.urls]
+Repository = "https://github.com/Ember452/tutelary"
 
 [tool.uv.sources]
 tutelary-core = { workspace = true }

@@ -3,7 +3,12 @@ name = "tutelary-mem0-adapter"
 version = "0.1.0"
 description = "Official Mem0 adapter for the Tutelary Memory port - third-party-posture reference integration."
 requires-python = ">=3.13"
+license = { text = "Apache-2.0" }
+
 dependencies = ["tutelary-core==0.1.0"]
+
+[project.urls]
+Repository = "https://github.com/Ember452/tutelary"
 
 [project.optional-dependencies]
 mem0 = ["mem0ai>=0.1"]

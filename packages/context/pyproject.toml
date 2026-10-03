@@ -3,7 +3,12 @@ name = "tutelary-context"
 version = "0.1.0"
 description = "Tutelary flagship: context governance - budget declaration, compaction, offloading, token introspection."
 requires-python = ">=3.13"
+license = { text = "Apache-2.0" }
+
 dependencies = ["tutelary-core==0.1.0"]
+
+[project.urls]
+Repository = "https://github.com/Ember452/tutelary"
 
 [project.entry-points."tutelary.contract_suites"]
 context = "tutelary.context.contract"

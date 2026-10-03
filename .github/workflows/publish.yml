@@ -1,0 +1,44 @@
+name: publish
+
+# 发布流水线（机械动作）：由所有者推送 vX.Y.Z tag 触发，逐包构建并发布全部 wheel。
+# 发布的**决定权**在项目所有者（docs/09 M5 / docs/07 §2）——本工作流永不自动触发、
+# 永不基于定时或普通 push 运行。首次使用前需在 PyPI 为九个发行名配置 trusted publishing。
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.13"
+      - run: uv sync --all-packages
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run pytest -q
+      # 逐包构建（lockstep：tag 版本即全部发行包的版本）
+      - run: uv build --all-packages --out-dir dist
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wheels
+          path: dist/
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      # PyPI trusted publishing（OIDC）：无需长期 API token
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: wheels
+          path: dist/
+      - name: Publish all distributions
+        uses: pypa/gh-action-pypi-publish@release/v1

@@ -3,7 +3,12 @@ name = "tutelary-policy"
 version = "0.1.0"
 description = "Tutelary policy: composable permission policies with the Suspend approval decision."
 requires-python = ">=3.13"
+license = { text = "Apache-2.0" }
+
 dependencies = ["tutelary-core==0.1.0"]
+
+[project.urls]
+Repository = "https://github.com/Ember452/tutelary"
 
 [tool.uv.sources]
 tutelary-core = { workspace = true }

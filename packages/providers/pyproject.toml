@@ -3,10 +3,14 @@ name = "tutelary-providers"
 version = "0.1.0"
 description = "Tutelary providers: OpenAI-compatible and Anthropic streaming adapters with retry, failover and concurrency cap."
 requires-python = ">=3.13"
+license = { text = "Apache-2.0" }
 dependencies = [
     "tutelary-core==0.1.0",
     "httpx>=0.27",
 ]
+
+[project.urls]
+Repository = "https://github.com/Ember452/tutelary"
 
 [tool.uv.sources]
 tutelary-core = { workspace = true }
