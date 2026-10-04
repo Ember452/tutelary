@@ -1,4 +1,4 @@
-"""events.py：事件词表的构造与 frozen 承诺（15 个基线事件，含 TurnCommitted）。"""
+"""events.py：事件词表的构造与 frozen 承诺（17 个基线事件）。"""
 
 import dataclasses
 from typing import Any
@@ -6,10 +6,12 @@ from typing import Any
 import pytest
 
 from tutelary.core.events import (
+    BudgetBreached,
     CompactNotification,
     CompactStarted,
     ErrorEvent,
     Event,
+    HookEvent,
     LoopComplete,
     PermissionRequest,
     PermissionResponse,
@@ -45,6 +47,8 @@ SAMPLES: tuple[tuple[type[Event], dict[str, Any]], ...] = (
     (TurnCommitted, {"turn_id": "t", "text": "hello", "session_id": "s"}),
     (LoopComplete, {"session_id": "s"}),
     (ErrorEvent, {"error": ValueError("x"), "phase": "turn"}),
+    (HookEvent, {"hook_id": "h1", "event": "pre_tool_use", "output": "", "success": True}),
+    (BudgetBreached, {"dimension": "turns", "reason": "超过轮次上限"}),
 )
 
 
@@ -59,5 +63,5 @@ def test_events_are_frozen():
         event.input = "changed"  # type: ignore[misc]
 
 
-def test_baseline_vocabulary_is_fifteen_events():
-    assert len(SAMPLES) == 15
+def test_baseline_vocabulary_is_seventeen_events():
+    assert len(SAMPLES) == 17

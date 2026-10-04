@@ -140,6 +140,30 @@ class ErrorEvent(Event):
     phase: str
 
 
+@dataclass(frozen=True, slots=True, kw_only=True)
+class HookEvent(Event):
+    """生命周期 Hook 的执行回执（FlowCoder 对齐：hooks 机制的可观测面）。
+
+    event 是被触发的生命周期点名（turn_start / pre_send / pre_tool_use
+    等），hook_id 标识具体 Hook，output 是动作产物的摘要，success 表示
+    是否正常完成。
+    """
+
+    hook_id: str
+    event: str
+    output: str = ""
+    success: bool = True
+
+
+@dataclass(frozen=True, slots=True, kw_only=True)
+class BudgetBreached(Event):
+    """运行预算被突破——引擎按"收敛不击杀"语义处理：注入收敛消息、
+    摘除工具 schema，让回合自然收尾（FlowCoder 对齐）。"""
+
+    dimension: str
+    reason: str
+
+
 type LLMEvent = ThinkingText | StreamText | ToolUseEvent | UsageEvent
 """Provider 流式输出的载荷事件：顺序跟随 LLM 原始序，Usage 必发（docs/04 §2）。"""
 

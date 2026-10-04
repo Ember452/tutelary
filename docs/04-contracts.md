@@ -26,7 +26,7 @@
 | Memory | recall 无命中返回 `[]` 不抛错；写路径订阅 `TurnCommitted` 且幂等消费 | 读路径阻塞事件循环；把大对象塞进 `MemoryHit` |
 | Sandbox | acquire 失败抛类型化错误；Executor 关闭时回收全部资源；**默认断网**，开放网络须显式 | 在 acquire 里执行用户代码 |
 
-## 3. 事件协议（15 个基线事件）
+## 3. 事件协议（17 个基线事件）
 
 | 事件 | 时机 | 关键字段 |
 |---|---|---|
@@ -45,8 +45,10 @@
 | `TurnCommitted` | 回合内容落定（记忆写路径的统一消费点） | turn_id, text, session_id |
 | `LoopComplete` | 运行结束 | session_id |
 | `ErrorEvent` | 错误 | error, phase |
+| `HookEvent` | 生命周期 Hook 执行回执（FlowCoder 对齐） | hook_id, event, output, success |
+| `BudgetBreached` | 运行预算突破（收敛不击杀） | dimension, reason |
 
-规则：事件 frozen；新增事件走 ADR（minor）；组件不得假设别人订阅了什么；`intercept` 链只允许用于 SPI 类事件，流式增量（StreamText/ThinkingText）不设拦截。`TurnCommitted` 是 M0 实现期补入的——Memory 写路径契约依赖它，基线清单原本漏了它。
+规则：事件 frozen；新增事件走 ADR（minor）；组件不得假设别人订阅了什么；`intercept` 链只允许用于 SPI 类事件，流式增量（StreamText/ThinkingText）不设拦截。`HookEvent` / `BudgetBreached` 是 FlowCoder 对齐期补入（引擎 hooks 与四维预算的可观测面）；`TurnCommitted` 是 M0 实现期补入的——Memory 写路径契约依赖它，基线清单原本漏了它。
 
 ## 4. 契约测试套件（中立性的机器证明）
 

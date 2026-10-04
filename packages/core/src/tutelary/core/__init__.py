@@ -16,11 +16,13 @@ from tutelary.core.errors import (
     TutelaryError,
 )
 from tutelary.core.events import (
+    BudgetBreached,
     Bus,
     CompactNotification,
     CompactStarted,
     ErrorEvent,
     Event,
+    HookEvent,
     LLMEvent,
     LoopComplete,
     PermissionRequest,
@@ -63,6 +65,7 @@ from tutelary.core.types import (
 __all__ = [
     "Allow",
     "Assembler",
+    "BudgetBreached",
     "Bus",
     "BusContractError",
     "CircularRequirementError",
@@ -86,6 +89,7 @@ __all__ = [
     "FakeMemory",
     "FakeProvider",
     "FakeSandbox",
+    "HookEvent",
     "LLMEvent",
     "LLMRequest",
     "LoopComplete",
