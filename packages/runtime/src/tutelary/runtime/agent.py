@@ -17,6 +17,8 @@ from tutelary.core.events import Event
 from tutelary.core.fakes import FakeBus
 from tutelary.core.ports import Memory, Policy, Provider, Sandbox, Tool
 from tutelary.core.types import Allow, Decision, ToolCall
+from tutelary.engine.budget import RunBudget
+from tutelary.engine.hooks import HookEngine
 from tutelary.engine.loop import Engine, EngineConfig
 from tutelary.memory import MarkdownMemoryConfig, MarkdownProvider
 from tutelary.providers.anthropic import AnthropicProvider
@@ -58,6 +60,8 @@ class Agent:
         agent_id: str = "agent",
         max_tool_hops: int = 8,
         bus: FakeBus | None = None,
+        hooks: HookEngine | None = None,
+        budget: RunBudget | None = None,
     ) -> None:
         self._bus = bus if bus is not None else FakeBus()
         if memory is not None:
@@ -69,7 +73,10 @@ class Agent:
             Toolbelt(tools),
             policy if policy is not None else _AllowAll(),
             memory if memory is not None else _NullMemory(),
-            config=EngineConfig(model=model, agent_id=agent_id, max_tool_hops=max_tool_hops),
+            config=EngineConfig(
+                model=model, agent_id=agent_id, max_tool_hops=max_tool_hops, budget=budget
+            ),
+            hooks=hooks,
         )
         self._governor = governor
 
@@ -121,9 +128,15 @@ class Agent:
 
             policy = Allowlist(tuple(policy_cfg["allow"]))  # type: ignore[union-attr, index-type]
 
+        budget: RunBudget | None = None
+        budget_cfg = config.get("budget")
+        if budget_cfg is not None:
+            budget = RunBudget(**budget_cfg)  # type: ignore[arg-type]
+
         return cls(
             provider=provider,
             memory=memory,
             policy=policy,
             model=str(provider_cfg.get("model", "default")),
+            budget=budget,
         )

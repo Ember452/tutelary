@@ -7,9 +7,12 @@ from pathlib import Path
 import pytest
 
 from tutelary.context import Budget, ContextGovernor
-from tutelary.core.events import StreamText, TurnCommitted
+from tutelary.core.events import BudgetBreached, HookEvent, StreamText, ToolUseEvent, TurnCommitted
 from tutelary.core.fakes import FakeBus, FakeProvider
 from tutelary.core.types import MemoryScope, ToolCall, ToolResult, ToolSpec
+from tutelary.core.types import ToolCall as ToolCallType
+from tutelary.engine.budget import RunBudget
+from tutelary.engine.hooks import Hook, HookEngine
 from tutelary.memory import MarkdownMemoryConfig, MarkdownProvider
 from tutelary.runtime import Agent, ExecTool, Toolbelt
 from tutelary.sandbox import SubprocessRuntime
@@ -121,3 +124,22 @@ async def test_turn_committed_event_reaches_observers():
     async for _ in agent.run("hi", session_id=_SESSION):
         pass
     assert seen == ["回答"]
+
+
+async def test_facade_passes_hooks_through():
+    engine_hooks = HookEngine([Hook(name="obs", event="turn_start")])
+    agent = _agent(hooks=engine_hooks)
+    events = [e async for e in agent.run("hi", session_id=_SESSION)]
+    receipts = [e for e in events if isinstance(e, HookEvent)]
+    assert [(r.hook_id, r.event) for r in receipts] == [("obs", "turn_start")]
+
+
+async def test_facade_budget_converges():
+    provider = FakeProvider(
+        [ToolUseEvent(call=ToolCallType(id="c1", name="echo_tool"))],
+        [StreamText(delta="收敛回答")],
+    )
+    agent = Agent(provider=provider, tools=[_EchoTool()], budget=RunBudget(max_turns=1))
+    events = [e async for e in agent.run("hi", session_id=_SESSION)]
+    assert any(isinstance(e, BudgetBreached) for e in events)
+    assert [type(e).__name__ for e in events][-1] == "LoopComplete"
