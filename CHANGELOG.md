@@ -42,6 +42,14 @@ Tutelary 全部发行包共享同一版本号（lockstep，见 [ADR-0003](docs/d
 
 ### 工程与治理
 
-- 架构门禁 6 条（AST import 图）+ 八包隔离安装矩阵；
+- 架构门禁 6 条（AST import 图）+ 九包隔离安装矩阵；
 - memory 基准 v0 + 官方 Mem0 adapter（第三方形态）+ 对比报告框架；
 - CI：lint / 测试 / 类型检查 / docker-marked 独立车道。
+
+### FlowCoder 对齐（F1，进行中）
+
+- 引擎生命周期 Hooks：8 个生命周期点（session_start / turn_start / pre_send /
+  post_receive / pre_tool_use / post_tool_use / turn_end / session_end），声明式
+  Hook 支持 reject（先于策略阻断）与 prompt 注入；HookEvent 回执可观测，异常隔离；
+- 运行预算：token / 轮次 / 时间 / 成本四维，触顶"收敛不击杀"——注入收敛消息、
+  摘除工具 schema，BudgetBreached 事件可观测；预算跨 Suspend/续跑连续。

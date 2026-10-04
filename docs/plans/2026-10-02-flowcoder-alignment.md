@@ -38,7 +38,11 @@
 
 ## 4. 里程碑状态
 
-- [ ] F1 hooks + 四维预算收敛
+- [x] F1 hooks + 四维预算收敛（2026-10-02 完成）
+  - 质量评判：HookEngine/RunBudget 各自独立模块、可选协作者不进端口（FlowCoder 同款）；
+    `_drive` 按 FlowCoder 分相流水展开，相序自释；预算状态挂会话使 Suspend/续跑连续。
+    评测中修掉两处自伤：post_receive 每请求触发曾被测试预期漏算；Hook 异常原被静默
+    吞掉（补 HookOutcome.errors 转可观测回执）；同步 _turn_close 属设计错误（改异步生成器）。
 - [ ] F2 工具执行升级 + 注入防御
 - [ ] F3 权限门分层
 - [ ] F4 双层上下文
