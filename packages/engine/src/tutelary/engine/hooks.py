@@ -54,12 +54,17 @@ class Hook:
 
 @dataclass(slots=True)
 class HookOutcome:
-    """一次生命周期点触发的聚合结果。"""
+    """一次生命周期点触发的聚合结果。
+
+    ``errors`` 收集 Hook 执行异常——隔离语义：不向上抛，但以
+    success=False 的回执可观测。
+    """
 
     prompts: list[str] = field(default_factory=list)
     rejected: bool = False
     reject_reason: str = ""
     fired: list[Hook] = field(default_factory=list)
+    errors: list[str] = field(default_factory=list)
 
 
 class HookEngine:

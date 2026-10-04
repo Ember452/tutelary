@@ -12,7 +12,7 @@ RunBudget 四维预算按"收敛不击杀"处理——触顶后注入收敛消�
 from __future__ import annotations
 
 import asyncio
-from collections.abc import AsyncIterator, Generator, Mapping, Sequence
+from collections.abc import AsyncIterator, Mapping, Sequence
 from dataclasses import dataclass, field
 from typing import Any, Protocol
 
@@ -282,7 +282,7 @@ class Engine(Component):
                     session.messages.append(Message(role="assistant", content=tuple(assistant)))
 
                 if not calls:
-                    for event in self._turn_close(
+                    async for event in self._turn_close(
                         session_id, session, text="".join(text_parts), usage=total_usage
                     ):
                         yield event
@@ -351,13 +351,13 @@ class Engine(Component):
         except Exception as exc:
             yield ErrorEvent(error=exc, phase=f"turn:{session_id}")
 
-    def _turn_close(
+    async def _turn_close(
         self, session_id: str, session: _Session, *, text: str, usage: Usage
-    ) -> Generator[Event]:
+    ) -> AsyncIterator[Event]:
         """收尾序列：turn_end hook → TurnCommitted → TurnComplete →
         session_end hook → LoopComplete（FlowCoder 的结束相序）。"""
         for receipt in self._hook_receipts(
-            "turn_end", self._run_hooks_sync("turn_end", session_id=session_id)
+            "turn_end", await self._run_hooks("turn_end", session_id=session_id)
         ):
             yield receipt
         turn_id = f"{session_id}-{session.turn_seq}"
@@ -365,7 +365,7 @@ class Engine(Component):
         yield TurnCommitted(turn_id=turn_id, text=text, session_id=session_id)
         yield TurnComplete(turn_id=turn_id, usage=usage)
         for receipt in self._hook_receipts(
-            "session_end", self._run_hooks_sync("session_end", session_id=session_id)
+            "session_end", await self._run_hooks("session_end", session_id=session_id)
         ):
             yield receipt
         yield LoopComplete(session_id=session_id)
@@ -376,27 +376,19 @@ class Engine(Component):
             return HookOutcome()
         try:
             return await self._hooks.run(event_name, context)
-        except Exception:
-            return HookOutcome()
-
-    def _run_hooks_sync(self, event_name: str, **context: Any) -> HookOutcome:
-        """同步语境（同步生成器 _turn_close）下的触发；异常同样隔离。"""
-        if self._hooks is None:
-            return HookOutcome()
-        try:
-            # HookEngine.run 是协程；同步收尾相用专用同步执行器兜底
-            return asyncio.run(self._hooks.run(event_name, context))
-        except RuntimeError:
-            # 已在事件循环内： turn 收尾实际总是发生在循环内，此分支仅为防御
-            return HookOutcome()
-        except Exception:
-            return HookOutcome()
+        except Exception as exc:
+            return HookOutcome(errors=[str(exc)])
 
     def _hook_receipts(self, event_name: str, outcome: HookOutcome) -> list[HookEvent]:
-        """把触发的 Hook 转成回执事件（顺序 = fire 顺序）。"""
-        return [
+        """把触发结果转成回执事件：正常 fire 按顺序，异常以 success=False 可观测。"""
+        receipts = [
             HookEvent(hook_id=hook.name, event=event_name, success=True) for hook in outcome.fired
         ]
+        receipts.extend(
+            HookEvent(hook_id=event_name, event=event_name, output=error, success=False)
+            for error in outcome.errors
+        )
+        return receipts
 
     def setup(self) -> Disposable | None:
         """引擎无自有副作用；记忆写路径由门面把事件桥接到 Bus 完成。"""
