@@ -8,13 +8,25 @@ from tutelary.policy.allowlist import Allowlist
 from tutelary.policy.approval import DEFAULT_PROMPT_TEMPLATE, ApprovalGate
 from tutelary.policy.combinator import AllOf, AnyOf
 from tutelary.policy.path_sandbox import DEFAULT_PATH_KEYS, PathSandbox
+from tutelary.policy.taint import (
+    TAINT_PATTERNS,
+    InjectionDetector,
+    TaintAwareChecker,
+    TaintState,
+    taint_inspector,
+)
 
 __all__ = [
     "DEFAULT_PATH_KEYS",
     "DEFAULT_PROMPT_TEMPLATE",
+    "TAINT_PATTERNS",
     "AllOf",
     "Allowlist",
     "AnyOf",
     "ApprovalGate",
+    "InjectionDetector",
     "PathSandbox",
+    "TaintAwareChecker",
+    "TaintState",
+    "taint_inspector",
 ]
