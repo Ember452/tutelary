@@ -8,7 +8,7 @@
 
 from __future__ import annotations
 
-from collections.abc import AsyncIterator, Mapping, Sequence
+from collections.abc import AsyncIterator, Callable, Mapping, Sequence
 from pathlib import Path
 from typing import Any
 
@@ -62,15 +62,17 @@ class Agent:
         bus: FakeBus | None = None,
         hooks: HookEngine | None = None,
         budget: RunBudget | None = None,
+        result_inspector: Callable[[str], None] | None = None,
     ) -> None:
         self._bus = bus if bus is not None else FakeBus()
+        self._result_inspector = result_inspector
         if memory is not None:
             setup = getattr(memory, "setup", None)
             if setup is not None:
                 setup()
         self._engine = Engine(
             provider,
-            Toolbelt(tools),
+            Toolbelt(tools, result_inspector=self._result_inspector),
             policy if policy is not None else _AllowAll(),
             memory if memory is not None else _NullMemory(),
             config=EngineConfig(
@@ -78,6 +80,7 @@ class Agent:
             ),
             hooks=hooks,
         )
+        self._result_inspector = result_inspector
         self._governor = governor
 
     async def run(self, user_input: str, *, session_id: str = "default") -> AsyncIterator[Event]:
@@ -86,6 +89,17 @@ class Agent:
             enforced = await self._governor.enforce(self._engine.history(session_id))
             self._engine.replace_history(session_id, enforced.messages)
         async for event in self._engine.run(session_id, user_input):
+            await self._bus.emit(event)
+            yield event
+
+    async def resume(
+        self, session_id: str, *, decisions: Mapping[str, bool]
+    ) -> AsyncIterator[Event]:
+        """审批后从断点续跑：decisions 按 call.id 给出是否放行。
+
+        停驻前的历史已治理过，续跑不重复 enforce；事件同样桥接 Bus。
+        """
+        async for event in self._engine.resume(session_id, decisions=decisions):
             await self._bus.emit(event)
             yield event
 

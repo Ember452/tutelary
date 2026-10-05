@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 
 from tutelary.core.ports import Sandbox, Tool
 from tutelary.core.types import ExecSpec, ToolCall, ToolResult, ToolSpec
@@ -11,8 +11,15 @@ from tutelary.core.types import ExecSpec, ToolCall, ToolResult, ToolSpec
 class Toolbelt:
     """把 N 个 Tool 聚合成引擎要的形状：specs() 声明 + execute() 按名路由。"""
 
-    def __init__(self, tools: Sequence[Tool] = ()) -> None:
+    def __init__(
+        self,
+        tools: Sequence[Tool] = (),
+        result_inspector: Callable[[str], None] | None = None,
+    ) -> None:
+        """``result_inspector``：每次成功执行后对输出调用的安检回调
+        （如注入防御的污染标记）——与策略共享状态实例由组合根接线。"""
         self._tools: dict[str, Tool] = {}
+        self._inspector = result_inspector
         for tool in tools:
             self._tools[tool.spec.name] = tool
 
@@ -23,7 +30,10 @@ class Toolbelt:
         tool = self._tools.get(call.name)
         if tool is None:
             return ToolResult(call_id=call.id, output=f"未知工具：{call.name}", is_error=True)
-        return await tool.execute(call)
+        result = await tool.execute(call)
+        if self._inspector is not None and not result.is_error:
+            self._inspector(result.output)
+        return result
 
 
 class ExecTool:
