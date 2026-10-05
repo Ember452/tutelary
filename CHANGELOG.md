@@ -53,3 +53,7 @@ Tutelary 全部发行包共享同一版本号（lockstep，见 [ADR-0003](docs/d
   Hook 支持 reject（先于策略阻断）与 prompt 注入；HookEvent 回执可观测，异常隔离；
 - 运行预算：token / 轮次 / 时间 / 成本四维，触顶"收敛不击杀"——注入收敛消息、
   摘除工具 schema，BudgetBreached 事件可观测；预算跨 Suspend/续跑连续。
+- 工具执行编排：ToolSpec 增 category / is_concurrency_safe；单轮多调用按
+  并发安全并行、其余串行，事件序保持确定；Suspend 整批停驻（FlowCoder 同义）；
+- 注入防御：TaintState + InjectionDetector + TaintAwareChecker（污染期 allow
+  升级为 Suspend，只升不降）；Toolbelt 结果安检接线，Agent 门面增 resume。

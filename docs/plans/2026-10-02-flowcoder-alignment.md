@@ -43,7 +43,11 @@
     `_drive` 按 FlowCoder 分相流水展开，相序自释；预算状态挂会话使 Suspend/续跑连续。
     评测中修掉两处自伤：post_receive 每请求触发曾被测试预期漏算；Hook 异常原被静默
     吞掉（补 HookOutcome.errors 转可观测回执）；同步 _turn_close 属设计错误（改异步生成器）。
-- [ ] F2 工具执行升级 + 注入防御
+- [x] F2 工具执行升级 + 注入防御（2026-10-02 完成）
+  - 质量评判：工具相拆成判定/执行/结果三段，事件序确定而执行延迟重叠；
+    HookOutcome.errors 让 Hook 异常可观测；taint 三件套共享单实例由组合根
+    接线（FlowCoder factory 注释同款）。评测修掉：门禁 2 命名空间误伤第三方
+    形态顶层名；门面缺 resume 的真实缺口（taint 停驻流需要）。
 - [ ] F3 权限门分层
 - [ ] F4 双层上下文
 - [ ] F5 MemoryHub + 子代理
