@@ -36,6 +36,7 @@ from tutelary.core.lifecycle import Component, Disposable
 from tutelary.core.ports import Memory, Policy, Provider, Tool
 from tutelary.core.types import (
     Allow,
+    Decision,
     Deny,
     LLMRequest,
     MemoryScope,
@@ -294,9 +295,11 @@ class Engine(Component):
                         f"工具调用轮数超过上限 {self._config.max_tool_hops}"
                     )
 
-                results: list[ToolResultBlock] = []
+                # —— 判定相（串行）：Hook → 策略，事件序确定 ——
+                decided: list[tuple[int, ToolCall, Decision]] = []
+                rejected: dict[int, ToolResult] = {}
                 suspended: list[ToolCall] = []
-                for call in calls:
+                for pos, call in enumerate(calls):
                     tool_outcome = await self._run_hooks(
                         "pre_tool_use",
                         session_id=session_id,
@@ -308,28 +311,47 @@ class Engine(Component):
                         yield receipt
                     if tool_outcome.rejected:
                         # Hook 拒绝先于策略判定（FlowCoder 同序）：不执行、不判定
-                        result = ToolResult(
+                        rejected[pos] = ToolResult(
                             call_id=call.id, output=tool_outcome.reject_reason, is_error=True
                         )
-                        yield ToolResultEvent(call=call, result=result)
-                        results.append(ToolResultBlock(result=result))
                         continue
 
                     yield PermissionRequest(call=call)
                     decision = self._policy.check(call)
                     yield PermissionResponse(call=call, decision=decision)
                     if isinstance(decision, Suspend):
-                        suspended.append(call)
-                        continue
+                        # 整批阻塞（FlowCoder 同义）：当前及之后未判定的调用一并停驻
+                        suspended = calls[pos:]
+                        break
+                    decided.append((pos, call, decision))
+
+                # —— 执行相：并发安全的调用并行，其余串行——延迟重叠，事件序不变 ——
+                outcomes: dict[int, ToolResult] = dict(rejected)
+                spec_by_name = {spec.name: spec for spec in self._tool.specs()}
+                tasks: dict[int, asyncio.Task[ToolResult]] = {}
+                for pos, call, decision in decided:
                     if isinstance(decision, Deny):
-                        result = ToolResult(
+                        outcomes[pos] = ToolResult(
                             call_id=call.id, output=f"被拒绝：{decision.reason}", is_error=True
                         )
-                    else:
-                        result = await self._tool.execute(call)
+                        continue
+                    spec = spec_by_name.get(call.name)
+                    if spec is not None and spec.is_concurrency_safe:
+                        tasks[pos] = asyncio.create_task(self._tool.execute(call))
+                for pos, call, decision in decided:
+                    if pos in tasks or isinstance(decision, Deny):
+                        continue
+                    outcomes[pos] = await self._tool.execute(call)
+                for pos, task in tasks.items():
+                    outcomes[pos] = await task
+
+                # —— 结果相：原顺序回执 + post_tool_use ——
+                results: list[ToolResultBlock] = []
+                stop = len(calls) - len(suspended)
+                for pos, call in enumerate(calls[:stop]):
+                    result = outcomes[pos]
                     yield ToolResultEvent(call=call, result=result)
                     results.append(ToolResultBlock(result=result))
-
                     post_outcome = await self._run_hooks(
                         "post_tool_use",
                         session_id=session_id,
