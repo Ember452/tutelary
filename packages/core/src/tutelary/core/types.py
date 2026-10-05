@@ -15,6 +15,9 @@ from typing import Any, Literal
 
 type Role = Literal["system", "user", "assistant", "tool"]
 
+type ToolCategory = Literal["read", "write", "command"]
+"""工具的副作用分类：read 只读、write 改写、command 执行命令。"""
+
 EMPTY_MAPPING: Mapping[str, Any] = MappingProxyType({})
 
 
@@ -69,11 +72,17 @@ class Message:
 
 @dataclass(frozen=True, slots=True, kw_only=True)
 class ToolSpec:
-    """工具的声明式规格；parameters 是该工具实参的 JSON Schema。"""
+    """工具的声明式规格；parameters 是该工具实参的 JSON Schema。
+
+    category 与 is_concurrency_safe 供引擎编排执行（多调用单轮时的并行
+    批次划分）：并发安全的工具可并行执行，其余串行；默认串行（保守）。
+    """
 
     name: str
     description: str = ""
     parameters: Mapping[str, Any] = EMPTY_MAPPING
+    category: ToolCategory = "read"
+    is_concurrency_safe: bool = False
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)

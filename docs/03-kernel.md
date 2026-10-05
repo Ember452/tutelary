@@ -28,7 +28,7 @@ tutelary/core/
 跨组件边界一律用这些类型，禁止裸 dict：
 
 - 消息与内容块：`Message` / `ThinkingBlock` / `ToolUseBlock` / `ToolResultBlock`
-- 工具：`ToolCall` / `ToolSpec` / `ToolResult`
+- 工具：`ToolCall` / `ToolSpec`（含 `category` / `is_concurrency_safe` 执行编排字段） / `ToolResult`
 - 调用与计量：`LLMRequest` / `Usage`
 - 记忆：`MemoryScope` / `MemoryHit`
 - 执行：`ExecSpec` / `ExecResult`
